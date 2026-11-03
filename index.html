@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f1f1f2"><meta name="color-scheme" content="light only">
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Tracker">
+<title>My Tracker</title>
+<style>
+:root{color-scheme:light;--bg:#f1f1f2;--card:#fff;--ink:#1f2326;--mut:#8a9096;--line:#eceef0;--acc:#e8793a;--teal:#2ec4a6;--btn:#23272b;--btnink:#fff;--soft:#f6f6f7;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box}
+.app{max-width:560px;margin:auto;padding:18px 16px 110px}
+h1{font-size:24px;margin:0}h2{font-size:17px;margin:22px 0 10px}
+.mut{color:var(--mut);font-size:13px}
+.card{background:var(--card);border-radius:22px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.05)}
+.hero{background:#1d2023;color:#fff;border-radius:22px;padding:18px;display:flex;align-items:center;justify-content:space-between;margin:16px 0}
+.hero b{font-size:19px;display:block;margin-bottom:4px}
+.row{display:flex;gap:10px;align-items:center}.grow{flex:1}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{background:var(--card);border-radius:20px;padding:14px;box-shadow:0 6px 24px rgba(0,0,0,.05)}
+.stat b{font-size:24px;display:block}
+.btn{border:0;border-radius:999px;padding:12px 20px;font:inherit;font-weight:700;background:var(--btn);color:var(--btnink);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn.acc{background:var(--acc);color:#fff}.btn.ghost{background:var(--soft);color:var(--ink)}
+.btn.sm{padding:8px 14px;font-size:13px}
+.ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.seg{display:flex;background:var(--card);border-radius:999px;padding:4px;margin:14px 0}
+.seg button{flex:1;border:0;background:none;padding:10px;border-radius:999px;font:inherit;font-weight:700;color:var(--mut);cursor:pointer}
+.seg button.on{background:var(--btn);color:var(--btnink)}
+select,input,textarea{font:inherit;color:var(--ink);background:var(--soft);border:1.5px solid transparent;border-radius:14px;padding:11px 12px;width:100%;outline:0}
+select:focus,input:focus,textarea:focus{border-color:var(--acc)}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.filters select{font-size:13px;padding:9px 10px}
+.task{background:var(--card);border-radius:20px;margin-bottom:10px;box-shadow:0 6px 24px rgba(0,0,0,.05);overflow:hidden;border-left:5px solid var(--pc)}
+.th{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer}
+.chk{width:26px;height:26px;border-radius:50%;border:2px solid var(--mut);display:grid;place-items:center;color:#fff;flex:none}
+.chk.on{background:var(--teal);border-color:var(--teal)}
+.chk .ic{width:15px;height:15px;stroke-width:3}
+.t-done .tt{text-decoration:line-through;color:var(--mut)}
+.tt{font-weight:700}
+.chev{transition:.2s;color:var(--mut)}.open .chev{transform:rotate(180deg)}
+.tb{display:none;padding:0 14px 14px;font-size:14px}.open .tb{display:block}
+.tb p{margin:6px 0}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--soft);margin-right:4px}
+.acc-h{width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:0;font:inherit;font-weight:800;font-size:16px;color:var(--ink);padding:6px 2px;cursor:pointer}
+.bar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;border-radius:99px}
+.bl{display:flex;justify-content:space-between;font-size:13px;margin:10px 0 5px;font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12px;margin-top:8px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+nav{position:fixed;left:0;right:0;bottom:0;padding:0 14px calc(10px + env(safe-area-inset-bottom,0px))}
+nav div{max-width:520px;margin:auto;background:var(--card);border-radius:26px;display:flex;justify-content:space-around;padding:8px;box-shadow:0 8px 30px rgba(0,0,0,.15)}
+nav button{border:0;background:none;color:var(--mut);padding:10px 14px;border-radius:18px;cursor:pointer;font:inherit;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button.on{color:var(--acc);background:var(--soft)}
+.fab{position:fixed;right:20px;bottom:100px;width:56px;height:56px;border-radius:50%;border:0;background:var(--acc);color:#fff;box-shadow:0 8px 20px rgba(232,121,58,.5);display:grid;place-items:center;cursor:pointer}
+.fab .ic{width:26px;height:26px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.sheet{background:var(--card);width:100%;max-width:560px;max-height:92%;overflow:auto;border-radius:28px 28px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px))}
+.sheet label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:12px 0 5px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--soft);border-radius:999px;padding:7px 8px 7px 13px;margin:0 6px 6px 0;font-size:13px;font-weight:600}
+.chip button{border:0;background:var(--card);color:var(--mut);width:20px;height:20px;border-radius:50%;cursor:pointer;line-height:1}
+.sw{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;font-size:13px;border-bottom:1px solid var(--line)}.sw input{width:22px;height:22px;accent-color:var(--acc);padding:0}
+.empty{text-align:center;color:var(--mut);padding:28px 10px}
+</style></head><body>
+<div class="app" id="app"></div>
+<nav><div id="nav"></div></nav>
+<script src="notify.js"></script>
+<script>
+const P={home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',list:'<path d="M9 6h12M9 12h12M9 18h12M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/>',brief:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',plus:'<path d="M12 5v14M5 12h14"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',down:'<path d="M6 9l6 6 6-6"/>',check:'<path d="M5 12l5 5 9-10"/>',fire:'<path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-4 3-6 1 1 1 2 2 2 1-3 0-5 1-8z"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'};
+const ic=n=>`<svg class="ic" viewBox="0 0 24 24">${P[n]}</svg>`;
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const today=()=>iso(new Date());
+const KEY='tracker.v1';
+const def={todo:[],career:[],cfg:{todoTypes:['Personal','Home','Health','Finance'],careerTypes:['Course','LinkedIn Update','Resume Update','Networking','Certification'],status:['To Do','In Progress','Done','On Hold'],priority:['High','Medium','Low'],notify:TN.defaults()}};
+let S;try{S=JSON.parse(localStorage.getItem(KEY))||def}catch(e){S=def}
+S.cfg.notify=S.cfg.notify||TN.defaults();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}TN.snapshot(S)};
+let route='today',view={todo:'list',career:'list'},F={todo:{},career:{}},open=new Set(),acc={todo:true,career:true,pend:true};
+const DONE='Done',PAL=['#9aa0a6','#e8793a','#2ec4a6','#5b8def','#c4506a','#a78bfa'];
+const sc=s=>PAL[Math.max(0,S.cfg.status.indexOf(s))%PAL.length];
+const pc=p=>({High:'#e5484d',Medium:'#e8793a',Low:'#2ec4a6'})[p]||PAL[(S.cfg.priority.indexOf(p)+3)%PAL.length];
+const fmt=d=>d?new Date(d+'T00:00').toLocaleDateString(undefined,{day:'numeric',month:'short'}):'—';
+const isDone=t=>t.status===DONE;
+const isToday=t=>(!t.start||t.start<=today())&&(!t.end||t.end>=today());
+const overdue=t=>!isDone(t)&&t.end&&t.end<today();
+const tn=k=>k==='todo'?'To-do':'Career';
+
+function ring(pct,size=64,col='#2ec4a6',track='rgba(128,128,128,.25)'){const r=size/2-6,c=2*Math.PI*r;return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${track}" stroke-width="7"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c*pct/100} ${c}" transform="rotate(-90 ${size/2} ${size/2})"/><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-size="${size/4.4}" font-weight="800" fill="currentColor">${Math.round(pct)}%</text></svg>`}
+function donut(items){const tot=items.reduce((a,b)=>a+b.v,0);if(!tot)return '<div class="empty">No data</div>';let off=0;const r=50,c=2*Math.PI*r;const arcs=items.filter(i=>i.v).map(i=>{const l=c*i.v/tot,s=`<circle cx="70" cy="70" r="${r}" fill="none" stroke="${i.c}" stroke-width="20" stroke-dasharray="${l} ${c-l}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;off+=l;return s}).join('');return `<div class="row"><svg width="140" height="140" viewBox="0 0 140 140">${arcs}<text x="70" y="70" text-anchor="middle" dominant-baseline="middle" font-size="26" font-weight="800" fill="currentColor">${tot}</text></svg><div class="legend grow" style="flex-direction:column">${items.map(i=>`<span><i style="background:${i.c}"></i>${esc(i.l)} · ${i.v}</span>`).join('')}</div></div>`}
+function bars(items){const m=Math.max(1,...items.map(i=>i.v));return items.map(i=>`<div class="bl"><span>${esc(i.l)}</span><span>${i.v}</span></div><div class="bar"><i style="width:${i.v/m*100}%;background:${i.c}"></i></div>`).join('')||'<div class="empty">No data</div>'}
+
+function taskCard(t,k){const o=open.has(t.id);return `<div class="task ${o?'open':''} ${isDone(t)?'t-done':''}" style="--pc:${pc(t.priority)}">
+<div class="th" onclick="tog('${t.id}')"><span class="chk ${isDone(t)?'on':''}" onclick="event.stopPropagation();toggleDone('${k}','${t.id}')">${isDone(t)?ic('check'):''}</span>
+<div class="grow"><div class="tt">${esc(t.task)}</div><div class="mut">${esc(t.type)} · ${fmt(t.start)} → ${fmt(t.end)}${overdue(t)?' · <b style="color:#e5484d">Overdue</b>':''}</div></div><span class="chev">${ic('down')}</span></div>
+<div class="tb"><p><span class="tag" style="color:${pc(t.priority)}">${esc(t.priority)}</span><span class="tag" style="color:${sc(t.status)}">${esc(t.status)}</span><span class="tag">${esc(t.type)}</span></p>
+${t.details?`<p>${esc(t.details)}</p>`:''}${t.note?`<p class="mut">📝 ${esc(t.note)}</p>`:''}
+<div class="row" style="margin-top:10px"><button class="btn ghost sm" onclick="form('${k}','${t.id}')">${ic('edit')}Edit</button><button class="btn ghost sm" onclick="del('${k}','${t.id}')">${ic('trash')}Delete</button></div></div></div>`}
+const tog=id=>{open.has(id)?open.delete(id):open.add(id);render()};
+const toggleDone=(k,id)=>{const t=S[k].find(x=>x.id===id);t.status=isDone(t)?S.cfg.status[0]:DONE;save();if(isDone(t))TN.completed(k,t,S);render()};
+const del=(k,id)=>{if(confirm('Delete this task?')){S[k]=S[k].filter(x=>x.id!==id);save();render()}};
+
+function listOf(k){const f=F[k],w=iso(new Date(Date.now()+7*864e5));return S[k].filter(t=>(!f.type||t.type===f.type)&&(!f.priority||t.priority===f.priority)&&(!f.status||t.status===f.status)&&(!f.due||(f.due==='today'?t.end===today():f.due==='week'?t.end&&t.end>=today()&&t.end<=w:f.due==='over'?overdue(t):true))).sort((a,b)=>(a.end||'9')<(b.end||'9')?-1:1)}
+const sel=(k,key,label,opts)=>`<select onchange="F['${k}']['${key}']=this.value;render()"><option value="">${label}</option>${opts.map(([v,l])=>`<option value="${esc(v)}" ${F[k][key]===v?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
+
+function moduleView(k){const all=S[k],L=listOf(k),types=S.cfg[k+'Types'];
+const dn=all.filter(isDone).length,pct=all.length?dn/all.length*100:0;
+let h=`<div class="row"><div class="grow"><h1>${tn(k)} ${k==='todo'?'List':'Tasks'}</h1><div class="mut">${k==='todo'?'Everyday tasks':'Courses, LinkedIn, resume & more'}</div></div></div>
+<div class="seg"><button class="${view[k]==='dash'?'on':''}" onclick="view['${k}']='dash';render()">Dashboard</button><button class="${view[k]==='list'?'on':''}" onclick="view['${k}']='list';render()">List</button></div>
+<div class="filters">${sel(k,'type','All types',types.map(x=>[x,x]))}${sel(k,'priority','All priorities',S.cfg.priority.map(x=>[x,x]))}${sel(k,'status','All statuses',S.cfg.status.map(x=>[x,x]))}${sel(k,'due','Any end date',[['today','Due today'],['week','Next 7 days'],['over','Overdue']])}</div>`;
+if(view[k]==='dash'){const c=(a,fn)=>a.filter(fn).length,ld=L.filter(isDone).length;
+h+=`<div class="grid" style="margin:12px 0"><div class="stat"><span class="mut">Total</span><b>${L.length}</b></div><div class="stat"><span class="mut">Completed</span><b style="color:var(--teal)">${ld}</b></div><div class="stat"><span class="mut">Pending</span><b>${L.length-ld}</b></div><div class="stat"><span class="mut">Overdue</span><b style="color:#e5484d">${L.filter(overdue).length}</b></div></div>
+<div class="card"><b>Completion</b><div class="row" style="margin-top:10px">${ring(L.length?ld/L.length*100:0,80)}<div class="mut grow">${ld} of ${L.length} tasks done in this view</div></div></div>
+<h2>By status</h2><div class="card">${donut(S.cfg.status.map(s=>({l:s,v:c(L,t=>t.status===s),c:sc(s)})))}</div>
+<h2>By priority</h2><div class="card">${bars(S.cfg.priority.map(p=>({l:p,v:c(L,t=>t.priority===p),c:pc(p)})))}</div>
+<h2>By type</h2><div class="card">${bars(types.map((t,i)=>({l:t,v:c(L,x=>x.type===t),c:PAL[i%PAL.length]})))}</div>`}
+else h+=(L.length?L.map(t=>taskCard(t,k)).join(''):`<div class="empty">No tasks yet. Tap + to add one.</div>`);
+return h+`<button class="fab" onclick="form('${k}')" aria-label="Add">${ic('plus')}</button>`}
+
+function todayView(){const t=today(),hr=new Date().getHours();
+const sets=['todo','career'].map(k=>({k,all:S[k].filter(isToday),pend:S[k].filter(overdue)}));
+const tot=sets.reduce((a,s)=>a+s.all.length,0),dn=sets.reduce((a,s)=>a+s.all.filter(isDone).length,0),pct=tot?dn/tot*100:0;
+const pend=sets.flatMap(s=>s.pend.map(x=>({...x,k:s.k})));
+const sec=(key,title,k,items)=>`<div class="card" style="margin-bottom:12px"><button class="acc-h" onclick="acc['${key}']=!acc['${key}'];render()"><span>${title} <span class="tag">${items.length}</span></span><span class="chev" style="transform:rotate(${acc[key]?180:0}deg)">${ic('down')}</span></button>${acc[key]?`<div style="margin-top:10px">${items.length?items.map(x=>taskCard(x,x.k||k)).join(''):'<div class="empty">Nothing here 🎉</div>'}</div>`:''}</div>`;
+const bar=(l,s,col)=>{const d=s.all.filter(isDone).length,p=s.all.length?d/s.all.length*100:0;return `<div class="bl"><span>${l}</span><span>${d}/${s.all.length}</span></div><div class="bar"><i style="width:${p}%;background:${col}"></i></div>`};
+return `<div class="mut">${new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})}</div><h1>Good ${hr<12?'morning':hr<18?'afternoon':'evening'} 👋</h1>
+<div class="hero"><div><b>Today's Progress</b><span style="opacity:.7;font-size:13px">${tot-dn} task${tot-dn===1?'':'s'} left</span></div><div style="color:#fff">${ring(pct,72)}</div></div>
+<div class="grid"><div class="stat"><span class="mut">Today</span><b>${tot}</b></div><div class="stat"><span class="mut" style="color:#e5484d">Pending (overdue)</span><b>${pend.length}</b></div></div>
+<div class="card" style="margin:12px 0">${bar('To-do',sets[0],'var(--acc)')}${bar('Career',sets[1],'var(--teal)')}</div>
+${sec('todo','To-do today','todo',sets[0].all)}${sec('career','Career today','career',sets[1].all)}${sec('pend','Pending / overdue','todo',pend)}`}
+
+function settingsView(){const g=(key,title)=>`<div class="card" style="margin-bottom:12px"><b>${title}</b><div style="margin:10px 0">${S.cfg[key].map((v,i)=>`<span class="chip">${esc(v)}<button onclick="rm('${key}',${i})">×</button></span>`).join('')}</div><div class="row"><input id="in-${key}" placeholder="Add new…" onkeydown="if(event.key==='Enter')add('${key}')"><button class="btn acc sm" onclick="add('${key}')">${ic('plus')}</button></div></div>`;
+return `<h1>Settings</h1><div class="mut" style="margin-bottom:14px">Customize dropdown values. “Done” marks a task complete.</div>${notifCard()}${g('todoTypes','To-do task types')}${g('careerTypes','Career task types')}${g('status','Status')}${g('priority','Priority')}<div class="row"><button class="btn ghost sm" onclick="exportData()">Export JSON</button><button class="btn ghost sm" onclick="if(confirm('Erase ALL data?')){S=JSON.parse(JSON.stringify(def));save();render()}">Reset all</button></div>`}
+function notifCard(){const n=S.cfg.notify,perm=('Notification' in window)?Notification.permission:'unsupported';
+const tg=(k,key,l)=>`<label class="sw"><span>${l}</span><input type="checkbox" ${n[k][key]?'checked':''} onchange="setN('${k}','${key}',this.checked)"></label>`;
+const grp=(k,t)=>`<b style="font-size:13px">${t}</b>${tg(k,'end','Task end date (today, tomorrow, overdue)')}${tg(k,'today',"Today's tasks summary")}${tg(k,'prio','High-priority pending tasks')}${tg(k,'status','Status: completed &amp; pending')}`;
+const tagTxt=perm==='granted'?'On':perm==='denied'?'Blocked':perm==='unsupported'?'Not supported':'Off';
+return `<div class="card" style="margin-bottom:12px"><div class="row"><b class="grow">🔔 Notifications</b><span class="tag">${tagTxt}</span></div>
+<div class="mut" style="margin:6px 0 12px">Choose what to be notified about. Alerts are sent once per day after your reminder time.</div>
+${perm==='granted'?`<div class="row" style="margin-bottom:8px"><span class="mut grow">Daily reminder time</span><input type="time" value="${n.time}" onchange="setN(null,'time',this.value)" style="width:130px"></div><button class="btn ghost sm" onclick="TN.test()">Send test notification</button>`:perm==='denied'?`<div class="mut">Notifications are blocked. Allow them in your browser or phone site settings.</div>`:`<button class="btn acc sm" onclick="enableN()">Enable notifications</button>`}
+<div style="margin-top:14px">${grp('todo','To-do tasks')}</div><div style="margin-top:14px">${grp('career','Career tasks')}</div></div>`}
+function setN(k,key,v){const n=S.cfg.notify;if(k)n[k][key]=v;else n[key]=v;save();TN.check(()=>S)}
+async function enableN(){if(!('Notification' in window))return alert('Notifications are not supported here. On iPhone, add the app to your Home Screen first.');const p=await Notification.requestPermission();if(p==='granted'){TN.registerSync();TN.check(()=>S)}render()}
+function add(key){const el=document.getElementById('in-'+key),v=el.value.trim();if(v&&!S.cfg[key].includes(v)){S.cfg[key].push(v);save();render()}}
+function rm(key,i){if(key==='status'&&S.cfg.status[i]===DONE)return alert('"Done" is required.');S.cfg[key].splice(i,1);save();render()}
+function exportData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download='tracker-backup.json';a.click()}
+
+function form(k,id){const t=id?S[k].find(x=>x.id===id):{task:'',type:S.cfg[k+'Types'][0],start:today(),end:today(),details:'',priority:S.cfg.priority[1]||S.cfg.priority[0],status:S.cfg.status[0],note:''};
+const o=(a,v)=>a.map(x=>`<option ${x===v?'selected':''}>${esc(x)}</option>`).join('');
+const m=document.createElement('div');m.className='modal';m.id='modal';m.onclick=e=>{if(e.target===m)m.remove()};
+m.innerHTML=`<div class="sheet"><div class="row"><h1 class="grow" style="font-size:20px">${id?'Edit':'New'} ${tn(k)} task</h1><button class="btn ghost sm" onclick="modal.remove()">Close</button></div>
+<label>Task</label><input id="f-task" value="${esc(t.task)}" placeholder="What needs doing?">
+<div class="grid"><div><label>Type</label><select id="f-type">${o(S.cfg[k+'Types'],t.type)}</select></div><div><label>Priority</label><select id="f-priority">${o(S.cfg.priority,t.priority)}</select></div>
+<div><label>Start date</label><input type="date" id="f-start" value="${t.start||''}"></div><div><label>End date</label><input type="date" id="f-end" value="${t.end||''}"></div></div>
+<label>Status</label><select id="f-status">${o(S.cfg.status,t.status)}</select>
+<label>Details</label><textarea id="f-details" rows="3">${esc(t.details)}</textarea><label>Note</label><textarea id="f-note" rows="2">${esc(t.note)}</textarea>
+<button class="btn acc" style="width:100%;justify-content:center;margin-top:18px" onclick="saveTask('${k}','${id||''}')">Save task</button></div>`;document.body.appendChild(m)}
+function saveTask(k,id){const v=n=>document.getElementById('f-'+n).value;if(!v('task').trim())return alert('Please enter a task');
+const t={id:id||Date.now().toString(36),task:v('task').trim(),type:v('type'),start:v('start'),end:v('end'),details:v('details'),priority:v('priority'),status:v('status'),note:v('note')};
+if(id)S[k]=S[k].map(x=>x.id===id?t:x);else S[k].push(t);save();modal.remove();render()}
+
+function render(){const y=scrollY;document.getElementById('app').innerHTML=route==='today'?todayView():route==='settings'?settingsView():moduleView(route);
+document.getElementById('nav').innerHTML=[['today','home','Today'],['todo','list','To-do'],['career','brief','Career'],['settings','gear','Settings']].map(([r,i,l])=>`<button class="${route===r?'on':''}" onclick="route='${r}';render();scrollTo(0,0)">${ic(i)}${l}</button>`).join('');scrollTo(0,y)}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+TN.start(()=>S);
+render();
+</script></body></html>
