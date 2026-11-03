@@ -93,7 +93,7 @@ function taskCard(t,k){const o=open.has(t.id);return `<div class="task ${o?'open
 <div class="grow"><div class="tt">${esc(t.task)}</div><div class="mut">${esc(t.type)} · ${fmt(t.start)} → ${fmt(t.end)}${overdue(t)?' · <b style="color:#e5484d">Overdue</b>':''}</div></div><span class="chev">${ic('down')}</span></div>
 <div class="tb"><p><span class="tag" style="color:${pc(t.priority)}">${esc(t.priority)}</span><span class="tag" style="color:${sc(t.status)}">${esc(t.status)}</span><span class="tag">${esc(t.type)}</span></p>
 ${t.details?`<p>${esc(t.details)}</p>`:''}${t.note?`<p class="mut">📝 ${esc(t.note)}</p>`:''}
-<div class="row" style="margin-top:10px"><button class="btn ghost sm" onclick="form('${k}','${t.id}')">${ic('edit')}Edit</button><button class="btn ghost sm" onclick="del('${k}','${t.id}')">${ic('trash')}Delete</button></div></div></div>`}
+<div class="row" style="margin-top:10px"><button class="btn ghost sm" onclick="openForm('${k}','${t.id}')">${ic('edit')}Edit</button><button class="btn ghost sm" onclick="del('${k}','${t.id}')">${ic('trash')}Delete</button></div></div></div>`}
 const tog=id=>{open.has(id)?open.delete(id):open.add(id);render()};
 const toggleDone=(k,id)=>{const t=S[k].find(x=>x.id===id);t.status=isDone(t)?S.cfg.status[0]:DONE;save();if(isDone(t))TN.completed(k,t,S);render()};
 const del=(k,id)=>{if(confirm('Delete this task?')){S[k]=S[k].filter(x=>x.id!==id);save();render()}};
@@ -113,7 +113,7 @@ h+=`<div class="grid" style="margin:12px 0"><div class="stat"><span class="mut">
 <h2>By priority</h2><div class="card">${bars(S.cfg.priority.map(p=>({l:p,v:c(L,t=>t.priority===p),c:pc(p)})))}</div>
 <h2>By type</h2><div class="card">${bars(types.map((t,i)=>({l:t,v:c(L,x=>x.type===t),c:PAL[i%PAL.length]})))}</div>`}
 else h+=(L.length?L.map(t=>taskCard(t,k)).join(''):`<div class="empty">No tasks yet. Tap + to add one.</div>`);
-return h+`<button class="fab" onclick="form('${k}')" aria-label="Add">${ic('plus')}</button>`}
+return h+`<button class="fab" onclick="openForm('${k}')" aria-label="Add">${ic('plus')}</button>`}
 
 function todayView(){const t=today(),hr=new Date().getHours();
 const sets=['todo','career'].map(k=>({k,all:S[k].filter(isToday),pend:S[k].filter(overdue)}));
@@ -143,7 +143,7 @@ function add(key){const el=document.getElementById('in-'+key),v=el.value.trim();
 function rm(key,i){if(key==='status'&&S.cfg.status[i]===DONE)return alert('"Done" is required.');S.cfg[key].splice(i,1);save();render()}
 function exportData(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download='tracker-backup.json';a.click()}
 
-function form(k,id){const t=id?S[k].find(x=>x.id===id):{task:'',type:S.cfg[k+'Types'][0],start:today(),end:today(),details:'',priority:S.cfg.priority[1]||S.cfg.priority[0],status:S.cfg.status[0],note:''};
+function openForm(k,id){const t=id?S[k].find(x=>x.id===id):{task:'',type:S.cfg[k+'Types'][0],start:today(),end:today(),details:'',priority:S.cfg.priority[1]||S.cfg.priority[0],status:S.cfg.status[0],note:''};
 const o=(a,v)=>a.map(x=>`<option ${x===v?'selected':''}>${esc(x)}</option>`).join('');
 const m=document.createElement('div');m.className='modal';m.id='modal';m.onclick=e=>{if(e.target===m)m.remove()};
 m.innerHTML=`<div class="sheet"><div class="row"><h1 class="grow" style="font-size:20px">${id?'Edit':'New'} ${tn(k)} task</h1><button class="btn ghost sm" onclick="modal.remove()">Close</button></div>
